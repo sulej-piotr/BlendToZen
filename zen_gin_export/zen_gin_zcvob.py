@@ -9,8 +9,8 @@ class ZCVob:
     _objects_count = 2
     _type_name = "zCVob"
     _triangles_limit = 52224
-    _nested_visual_vob_type = "zCProgMeshProto"
-    _nested_visual_triangles_limit = 53505
+    _visual_object_type_2 = "zCProgMeshProto"
+    _visual_object_triangles_limit = 53505
     _static = True
     _show_visual = True
     _collision = True
@@ -27,7 +27,6 @@ class ZCVob:
 
     def __start_main_object_block(self, object_index):
         self._data_printer.start_object_block(
-            type_1="%",
             type_2=self._type_name,
             triangles_limit=self._triangles_limit,
             object_index=object_index
@@ -43,8 +42,8 @@ class ZCVob:
     def __print_visual_block(self, object_index):
         self._data_printer.start_object_block(
             type_1="visual",
-            type_2=self._nested_visual_vob_type,
-            triangles_limit=self._nested_visual_triangles_limit,
+            type_2=self._visual_object_type_2,
+            triangles_limit=self._visual_object_triangles_limit,
             object_index=self._visual_object_index(object_index)
         )
         self._data_printer.end_object_block()

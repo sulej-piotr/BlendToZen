@@ -1,17 +1,11 @@
-from .zen_gin_zcvob import ZCVob
+from .zen_gin_zcvob_no_visual import NoVisualObjectVob
 
 
-class ZCVobSpot(ZCVob):
-    _objects_count = 1
+class ZCVobSpot(NoVisualObjectVob):
     _type_name = "zCVobSpot:zCVob"
     _triangles_limit = 52224
-    _nested_visual_vob_type = "%"
-    _nested_visual_triangles_limit = 0
     _static = False
     _collision = False
 
     def _visual(self):
         return ""
-
-    def _visual_object_index(self, object_index):
-        return 0
