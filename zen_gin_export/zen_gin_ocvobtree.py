@@ -42,20 +42,24 @@ class OCVobTree:
             nested_objects_index = vob.nested_objects_count(nested_objects_index)
         return nested_objects_index
 
-    def __print_vob_tree_start_marker(self):
+    def __print_vob_tree_block_start(self):
         self.__printer.print("\t[VobTree % 0 0]")
 
-    def __print_vob_tree_end_marker(self):
-        self.__printer.print("\t[EndMarker % 0 0]")
+    def __print_vob_tree_block_end(self):
+        self.__print_children_count(index=len(self.__vob_tree))
         self.__printer.print("\t[]")
 
-    def __print_way_net(self):
-        self.__printer.print("\t[WayNet % 0 0]")
+    def __print_end_marker(self):
+        self.__printer.print("\t[EndMarker % 0 0]")
         self.__printer.print("\t[]")
 
     def __print_children_count(self, index):
         children_count = len(self.__vob_tree) if index == 0 else 0
-        self.__printer.print("\t\tchilds{index}:int{children_count}".format(index=index, children_count=children_count))
+        self.__printer.print("\t\tchilds{index}=int:{children_count}".format(index=index, children_count=children_count))
+
+    def __print_way_net(self):
+        self.__printer.print("\t[WayNet % 0 0]")
+        self.__printer.print("\t[]")
 
     def __print_vob(self, vob: ZCVob, index, nested_objects_index):
         self.__print_children_count(index)
@@ -67,7 +71,8 @@ class OCVobTree:
             nested_objects_index = self.__print_vob(vob, index, nested_objects_index)
 
     def print(self):
-        self.__print_vob_tree_start_marker()
+        self.__print_vob_tree_block_start()
         self.__print_vobs()
+        self.__print_vob_tree_block_end()
         self.__print_way_net()
-        self.__print_vob_tree_end_marker()
+        self.__print_end_marker()
