@@ -6,7 +6,7 @@ from .printer import Printer
 
 
 class ZCVob:
-    _nested_objects_count = 2
+    _objects_count = 2
     _type_name = "zCVob"
     _triangles_limit = 52224
     _nested_visual_vob_type = "zCProgMeshProto"
@@ -17,94 +17,41 @@ class ZCVob:
     __3ds_extension = ".3DS"
     __end_block_marker = "[]"
 
-    def __init__(self, blender_object, printer: Printer):
+    def __init__(self, blender_object, printer: Printer, data_printer):
         self.__blender_object = blender_object
         self.__printer = printer
+        self._data_printer = data_printer
 
-    def nested_objects_count(self, nested_objects_index):
-        return nested_objects_index + self._nested_objects_count
+    def updated_object_index(self, object_index):
+        return object_index + self._objects_count
 
-    @staticmethod
-    def get_object_block_marker_indent(is_nested):
-        return "\t\t\t" if is_nested else "\t\t"
-
-    def _start_object_block(self, object_type, vob_type, triangles_limit, nested_objects_index, is_nested):
-        indent = self.get_object_block_marker_indent(is_nested=is_nested)
-        self.__printer.print(indent + "[{object_type} {vob_type} {triangles_limit} {nested_objects_index}]".format(
-            object_type=object_type,
-            triangles_limit=triangles_limit,
-            vob_type=vob_type,
-            nested_objects_index=nested_objects_index
-        ))
-
-    def __start_main_object_block(self, nested_objects_index):
-        self._start_object_block(
-            object_type="%",
-            vob_type=self._type_name,
+    def __start_main_object_block(self, object_index):
+        self._data_printer.start_object_block(
+            type_1="%",
+            type_2=self._type_name,
             triangles_limit=self._triangles_limit,
-            nested_objects_index=nested_objects_index,
-            is_nested=False
+            object_index=object_index
         )
 
-    def _end_object_block(self, is_nested):
-        indent = self.get_object_block_marker_indent(is_nested=is_nested)
-        self.__printer.print(indent + self.__end_block_marker)
-
     @staticmethod
-    def _nested_visual_nested_objects_index(nested_objects_index):
-        return nested_objects_index + 1
+    def _visual_object_index(object_index):
+        return object_index + 1
 
     def _print_additional_data(self):
         pass
 
-    def __print_nested_visual(self, nested_objects_index):
-        self._start_object_block(
-            object_type="visual",
-            vob_type=self._nested_visual_vob_type,
+    def __print_visual_block(self, object_index):
+        self._data_printer.start_object_block(
+            type_1="visual",
+            type_2=self._nested_visual_vob_type,
             triangles_limit=self._nested_visual_triangles_limit,
-            nested_objects_index=self._nested_visual_nested_objects_index(nested_objects_index),
-            is_nested=True
+            object_index=self._visual_object_index(object_index)
         )
-        self._end_object_block(True)
+        self._data_printer.end_object_block()
 
     def __print_ai(self):
-        self._start_object_block(
-            object_type="ai",
-            vob_type="%",
-            triangles_limit=0,
-            nested_objects_index=0,
-            is_nested=True
-        )
-        self._end_object_block(True)
-
-    def __print_property(self, name, data_type, value):
-        self.__printer.print("\t\t\t{name}={data_type}:{value}".format(
-            name=name, data_type=data_type, value=value
-        ))
-
-    def _print_vec3_property(self, name, value_vector):
-        self.__print_property(name, "vec3", value_vector)
-
-    def _print_raw_rotation_property(self, name, value_quaternion):
-        self.__print_property(name, "raw", value_quaternion)
-
-    def _print_raw_float_property(self, name, value):
-        self.__print_property(name, "rawFloat", value)
-
-    def _print_float_property(self, name, value_float):
-        self.__print_property(name, "float", value_float)
-
-    def _print_enum_property(self, name, value_enum_ordinal):
-        self.__print_property(name, "enum", value_enum_ordinal)
-
-    def _print_bool_property(self, name, value_bool):
-        self.__print_property(name, "bool", 1 if value_bool else 0)
-
-    def _print_int_property(self, name, value_int):
-        self.__print_property(name, "int", value_int)
-
-    def _print_string_property(self, name, value_string):
-        self.__print_property(name, "string", value_string)
+        self._data_printer.start_object_block(type_1="ai")
+        self._data_printer.end_object_block()
 
     def _vob_name(self):
         return self.__blender_object.name.split(":")[-1].split(".")[0]
@@ -151,30 +98,30 @@ class ZCVob:
         return "".join(map(ZCVob.convert_vector, new_qt.to_matrix()))
 
     def __print_vob_data(self):
-        self._print_int_property(name="pack", value_int=0)
-        self._print_string_property(name="presetName", value_string="")
-        self._print_raw_float_property(name="bbox3DWS", value=self.__bounding_box())
-        self._print_raw_rotation_property(name="trafoOSToWSRot", value_quaternion=self.__rotation())
-        self._print_vec3_property(name="trafoOSToWSPos", value_vector=self.__location())
-        self._print_string_property(name="vobName", value_string=self._printed_vob_name())
-        self._print_string_property(name="visual", value_string=self._visual())
-        self._print_bool_property(name="showVisual", value_bool=self._show_visual)
-        self._print_enum_property(name="visualCamAlign", value_enum_ordinal=0)
-        self._print_enum_property(name="visualAniMode", value_enum_ordinal=0)
-        self._print_float_property(name="visualAniModeStrength", value_float=0)
-        self._print_float_property(name="vobFarClipZScale", value_float=1)
-        self._print_bool_property(name="cdStatic", value_bool=self._collision)
-        self._print_bool_property(name="cdDyn", value_bool=self._collision)
-        self._print_bool_property(name="staticVob", value_bool=self._static)
-        self._print_enum_property(name="dynShadow", value_enum_ordinal=0)
-        self._print_int_property(name="zbias", value_int=0)
-        self._print_bool_property(name="isAmbient", value_bool=False)
+        self._data_printer.print_int_property(name="pack", value_int=0)
+        self._data_printer.print_string_property(name="presetName", value_string="")
+        self._data_printer.print_raw_float_property(name="bbox3DWS", value=self.__bounding_box())
+        self._data_printer.print_raw_rotation_property(name="trafoOSToWSRot", value_quaternion=self.__rotation())
+        self._data_printer.print_vec3_property(name="trafoOSToWSPos", value_vector=self.__location())
+        self._data_printer.print_string_property(name="vobName", value_string=self._printed_vob_name())
+        self._data_printer.print_string_property(name="visual", value_string=self._visual())
+        self._data_printer.print_bool_property(name="showVisual", value_bool=self._show_visual)
+        self._data_printer.print_enum_property(name="visualCamAlign", value_enum_ordinal=0)
+        self._data_printer.print_enum_property(name="visualAniMode", value_enum_ordinal=0)
+        self._data_printer.print_float_property(name="visualAniModeStrength", value_float=0)
+        self._data_printer.print_float_property(name="vobFarClipZScale", value_float=1)
+        self._data_printer.print_bool_property(name="cdStatic", value_bool=self._collision)
+        self._data_printer.print_bool_property(name="cdDyn", value_bool=self._collision)
+        self._data_printer.print_bool_property(name="staticVob", value_bool=self._static)
+        self._data_printer.print_enum_property(name="dynShadow", value_enum_ordinal=0)
+        self._data_printer.print_int_property(name="zbias", value_int=0)
+        self._data_printer.print_bool_property(name="isAmbient", value_bool=False)
 
-    def print(self, nested_objects_index):
-        self.__start_main_object_block(nested_objects_index)
+    def print(self, object_index):
+        self.__start_main_object_block(object_index)
         self.__print_vob_data()
-        self.__print_nested_visual(nested_objects_index=nested_objects_index)
+        self.__print_visual_block(object_index=object_index)
         self.__print_ai()
         self._print_additional_data()
-        self._end_object_block(False)
-        return self.nested_objects_count(nested_objects_index)
+        self._data_printer.end_object_block()
+        return self.updated_object_index(object_index)

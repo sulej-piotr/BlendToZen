@@ -1,24 +1,20 @@
 from .zen_gin_ocvobtree import OCVobTree
 from .printer import Printer
+from .zen_gin_data_printer import ZenGinDataPrinter
 
 
 class ZenArchive:
 
     def __init__(self, blender_objects, printer: Printer):
-        self.__vob_tree = OCVobTree(blender_objects, printer)
         self.__printer = printer
-
-    def __print_archive_start_marker(self):
-        self.__printer.print("[% oCWorld:zCWorld 36865 0]")
-
-    def __print_archive_end_marker(self):
-        self.__printer.print("[]")
+        self.__data_printer = ZenGinDataPrinter(printer)
+        self.__vob_tree = OCVobTree(blender_objects, printer, self.__data_printer)
 
     def __print_header_section_end_marker(self):
         self.__printer.print("END")
 
     def __objects_count(self):
-        return self.__vob_tree.nested_objects_count()
+        return self.__vob_tree.objects_count()
 
     def __print_metadata(self):
         self.__printer.print("ZenGin Archive")
@@ -38,6 +34,10 @@ class ZenArchive:
         self.__print_metadata()
         self.__print_objects()
         self.__printer.print()
-        self.__print_archive_start_marker()
+        self.__data_printer.start_object_block(
+            type_2="oCWorld:zCWorld",
+            triangles_limit=36865,
+            object_index=0
+        )
         self.__vob_tree.print()
-        self.__print_archive_end_marker()
+        self.__data_printer.end_object_block()
