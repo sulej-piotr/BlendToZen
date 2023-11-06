@@ -7,6 +7,7 @@ class OCItem(ZCVob):
     _triangles_limit = 0
     _nested_visual_vob_type = "%"
     _nested_visual_triangles_limit = 0
+    _static = False
     _show_visual = False
 
     def __init__(self, blender_object, printer):

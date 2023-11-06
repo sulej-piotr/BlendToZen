@@ -1,10 +1,22 @@
 from .zen_gin_zcvob_ocitem import OCItem
 from .zen_gin_zcvob_zcvobspot import ZCVobSpot
 from .zen_gin_zcvob import ZCVob
+from .zen_gin_zcvob_level_compo import ZCVobLevelCompo
 from .printer import Printer
 
 
 class OCVobTree:
+
+    @staticmethod
+    def __vob_order(vob):
+        if isinstance(vob, ZCVobLevelCompo):
+            return 0
+        elif isinstance(vob, ZCVob):
+            return 1
+        elif isinstance(vob, OCItem):
+            return 2
+        elif isinstance(vob, ZCVobSpot):
+            return 3
 
     def __create_vob(self, blender_object):
         if blender_object.name.startswith("zCVob:"):
@@ -13,11 +25,14 @@ class OCVobTree:
             return OCItem(blender_object, self.__printer)
         elif blender_object.name.startswith("zCVobSpot:"):
             return ZCVobSpot(blender_object, self.__printer)
+        elif blender_object.name.startswith("zCVobLevelCompo:"):
+            return ZCVobLevelCompo(blender_object, self.__printer)
 
     def __init__(self, blender_objects, printer: Printer):
         self.__printer = printer
         mapped_vobs = list(map(self.__create_vob, blender_objects))
         filtered_vobs = [i for i in mapped_vobs if i is not None]
+        filtered_vobs.sort(key=OCVobTree.__vob_order)
         self.__vob_tree = filtered_vobs
 
     def nested_objects_count(self):
@@ -47,7 +62,7 @@ class OCVobTree:
         return vob.print(nested_objects_index)
 
     def __print_vobs(self):
-        nested_objects_index = 0
+        nested_objects_index = 1
         for index, vob in enumerate(self.__vob_tree):
             nested_objects_index = self.__print_vob(vob, index, nested_objects_index)
 

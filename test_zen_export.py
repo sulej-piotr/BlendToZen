@@ -19,12 +19,13 @@ class DummyBlenderObject:
 zen_gin_export.ZenArchive(
     blender_objects=[
         DummyBlenderObject("zCVob:vob1"),
-        DummyBlenderObject("zCVob:vob1.001"),
         DummyBlenderObject("filtering"),
-        DummyBlenderObject("oCItem:ITFO_APPLE"),
         DummyBlenderObject("oCItem:ITFO_APPLE.001"),
         DummyBlenderObject("zCVobSpot:FP_ALCHEMIST_01"),
+        DummyBlenderObject("zCVob:vob1.001"),
         DummyBlenderObject("zCVobSpot:FP_ALCHEMIST_02"),
+        DummyBlenderObject("oCItem:ITFO_APPLE"),
+        DummyBlenderObject("zCVobLevelCompo:SUKIENNICE_13"),
     ],
     printer=zen_gin_export.FilePrinter("TEST.ZEN")
 ).print()

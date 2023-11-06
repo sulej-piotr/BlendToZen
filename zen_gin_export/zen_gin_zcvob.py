@@ -86,10 +86,10 @@ class ZCVob:
         self.__print_property(name, "vec3", value_vector)
 
     def _print_raw_rotation_property(self, name, value_quaternion):
-        self.__print_property(name, "rawFloat", value_quaternion)
+        self.__print_property(name, "raw", value_quaternion)
 
     def _print_raw_float_property(self, name, value):
-        self.__print_property(name, "raw", value)
+        self.__print_property(name, "rawFloat", value)
 
     def _print_float_property(self, name, value_float):
         self.__print_property(name, "float", value_float)
@@ -108,6 +108,9 @@ class ZCVob:
 
     def _vob_name(self):
         return self.__blender_object.name.split(":")[-1].split(".")[0]
+
+    def _printed_vob_name(self):
+        return self._vob_name()
 
     def _visual(self):
         return self._vob_name() + self.__3ds_extension
@@ -153,7 +156,7 @@ class ZCVob:
         self._print_raw_float_property(name="bbox3DWS", value=self.__bounding_box())
         self._print_raw_rotation_property(name="trafoOSToWSRot", value_quaternion=self.__rotation())
         self._print_vec3_property(name="trafoOSToWSPos", value_vector=self.__location())
-        self._print_string_property(name="vobName", value_string=self._vob_name())
+        self._print_string_property(name="vobName", value_string=self._printed_vob_name())
         self._print_string_property(name="visual", value_string=self._visual())
         self._print_bool_property(name="showVisual", value_bool=self._show_visual)
         self._print_enum_property(name="visualCamAlign", value_enum_ordinal=0)
