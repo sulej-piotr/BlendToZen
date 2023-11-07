@@ -24,6 +24,9 @@ Name of your object will be used as freepoint name. E.g. `zCVobSpot:FP_STAND_ALC
 #### zCVobLevelCompo
 You should use name of your world's mesh, without `.3ds` extension. E.g. if your object is named `zCVobLevelCompo:NewWorld_Part_City_P01.3ds`, then `NewWorld_Part_City_P01.3ds` will be used as your world's mesh.
 
+#### zCWaypoint
+Name of your object will be used as waypoint name. E.g. `zCWaypoint:MARKET_PATH_01` will be exported `MARKET_PATH_01` waypoint.
+
 ## How to use this module
 
 - Copy `zen_gin_export` directory to `python\lib` directory of your Blender installation.
