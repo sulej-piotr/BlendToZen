@@ -2,7 +2,6 @@ from .printer import Printer
 
 
 class ZenGinDataPrinter:
-    __end_block_marker = "[]"
 
     def __init__(self, printer: Printer):
         self.__printer = printer
@@ -28,7 +27,7 @@ class ZenGinDataPrinter:
 
     def end_object_block(self):
         self.__decrement_indent()
-        self.__printer.print(self.__indent + self.__end_block_marker)
+        self.__printer.print(self.__indent + "[]")
 
     def __print_property(self, name, data_type, value):
         self.__printer.print(self.__indent + "{name}={data_type}:{value}".format(
