@@ -15,7 +15,6 @@ class ZCVob:
     _show_visual = True
     _collision = True
     __3ds_extension = ".3DS"
-    __end_block_marker = "[]"
 
     def __init__(self, blender_object, printer: Printer, data_printer):
         self.__blender_object = blender_object

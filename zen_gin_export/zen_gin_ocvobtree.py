@@ -50,31 +50,22 @@ class OCVobTree:
         self.__print_children_count(index=len(self.__vob_tree))
         self.__data_printer.end_object_block()
 
-    def __print_end_marker(self):
-        self.__data_printer.start_object_block(type_1="EndMarker")
-        self.__data_printer.end_object_block()
-
     def __print_children_count(self, index):
         children_count = len(self.__vob_tree) if index == 0 else 0
         childs_property_name = "childs{index}".format(index=index)
         self.__data_printer.print_int_property(childs_property_name, children_count)
 
-    def __print_way_net(self):
-        self.__data_printer.start_object_block(type_1="WayNet")
-        self.__data_printer.end_object_block()
-
     def __print_vob(self, vob: ZCVob, index, object_index):
         self.__print_children_count(index)
         return vob.print(object_index)
 
-    def __print_vobs(self):
-        object_index = 1
+    def __print_vobs(self, object_index):
         for index, vob in enumerate(self.__vob_tree):
             object_index = self.__print_vob(vob, index, object_index)
+        return object_index
 
-    def print(self):
+    def print(self, object_index):
         self.__print_vob_tree_block_start()
-        self.__print_vobs()
+        object_index = self.__print_vobs(object_index)
         self.__print_vob_tree_block_end()
-        self.__print_way_net()
-        self.__print_end_marker()
+        return object_index
