@@ -46,7 +46,7 @@ Fake `mathutils` module allows to test this plugin by running `test_zen_export.p
 
 ## Plans for future of this project
 
-First of all, I want to rewrite remaining parts of quick prototype that I've created. This includes WayNet support (using geometry nodes to visualise connections between the waypoints) and generating assets from ``Gothic`` scripts (items) and meshes.
+First of all, I want to rewrite remaining part of quick prototype that I've created - generating assets from ``Gothic`` scripts (items) and meshes.
 
 Later on I will be using this module for creation of my small ZEN and slowly adding more types of objects that I will need in this ZEN. I definitely need `oCMobInter`, `oCZoneMusicDefault` and `zCVobStartpoint`, maybe also `zCVobLight` and few more.
 
