@@ -8,7 +8,7 @@ class FilePrinter(Printer):
         self.__filepath = filepath
 
     def __del__(self):
-        with open(self.__filepath, 'w') as file:
+        with open(self.__filepath, mode='w', encoding="windows-1250") as file:
             print(self.__content, end="", file=file)
 
     def print(self, *content):
